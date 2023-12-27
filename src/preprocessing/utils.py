@@ -1,4 +1,6 @@
 # Authors: Niloufar Beyranvand
+import sys 
+sys.path.append('/home/nbeyran/Hate_Speech_Detection')
 from typing import List, Tuple
 import numpy as np
 from pathlib import Path
@@ -104,7 +106,6 @@ def load_and_process(path: Path,
     2. Drops specified columns that are not required for model training or analysis.
     3. Extracts tweets and their corresponding classification labels.
     4. Cleans the tweet text by removing noise and standardizing the format.
-    5. Uses the provided tokenizer to encode the tweets into a format suitable for BERT processing.
     
     Parameters:
     - path (Path): A Path object pointing to the CSV file to be processed.
@@ -114,7 +115,6 @@ def load_and_process(path: Path,
     Returns:
     - Tuple of NumPy arrays: input IDs, attention masks, and labels, all prepared for BERT model input.
     """
-    # Read the original dataset from the specified path
     original_data = pd.read_csv(path)
     # Filter out the unwanted columns from the DataFrame
     filtered_data = drop_unwanted_columns(data=original_data, columns_to_drop=columns_to_drop)
@@ -122,7 +122,4 @@ def load_and_process(path: Path,
     data , labels = filtered_data['tweet'].tolist(), filtered_data['class']
     # Clean the tweet texts by removing unwanted characters, correcting case, etc.
     cleaned_tweets = [clean_text(tweet) for tweet in data]
-    # Tokenize the cleaned tweets and prepare the dataset for input into a BERT model
-    input_ids, attention_masks, labels = tokenize_and_prepare_dataset(sentences = cleaned_tweets, labels=labels, tokenizer=tokenizer)
-
-    return input_ids, attention_masks, labels
+    return cleaned_tweets, labels
