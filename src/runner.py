@@ -3,6 +3,7 @@ sys.path.append('/home/nbeyran/Hate_Speech_Detection')
 sys.path.append('/home/nbeyran/Hate_Speech_Detection/src')
 
 from lightning import Trainer
+from lightning.pytorch.callbacks import ModelCheckpoint
 from pytorch_lightning import seed_everything
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
@@ -73,7 +74,16 @@ def main(args):
     validation_data_loader = DataLoader(list(zip(validation_input_ids, validation_attention_masks, validation_labels)),
                                         batch_size=args.validation_batch_size,
                                         shuffle=True)
-
+    
+    model_checkpoint = ModelCheckpoint(
+        filepath=args.model_checkpoint_path,
+        filename='HateDetection-{args.language_model_name_or_path}-{epoch:02d}-{val_loss:.2f}',
+        save_top_k=1,
+        verbose=True,
+        monitor='val_loss',
+        mode='min',
+        prefix=''
+    )
 
     model = HateDetection_LM_CNN(language_model_name_or_path= args.language_model_name_or_path,
                                   max_length=args.max_length,
@@ -81,7 +91,7 @@ def main(args):
                                   number_of_classes=args.number_of_classes)
     
     if args.do_train:
-      trainer = Trainer(max_epochs=args.max_epochs)
+      trainer = Trainer(max_epochs=args.max_epochs, callbacks=[model_checkpoint])
       trainer.fit(model, train_data_loader, validation_data_loader)
     
     if args.do_test:
