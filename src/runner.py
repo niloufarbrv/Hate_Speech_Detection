@@ -76,13 +76,12 @@ def main(args):
                                         shuffle=True)
     
     model_checkpoint = ModelCheckpoint(
-        filepath=args.model_checkpoint_path,
+        dirpath=args.model_checkpoint_path,
         filename='HateDetection-{args.language_model_name_or_path}-{epoch:02d}-{val_loss:.2f}',
         save_top_k=1,
         verbose=True,
         monitor='val_loss',
-        mode='min',
-        prefix=''
+        mode='min'
     )
 
     model = HateDetection_LM_CNN(language_model_name_or_path= args.language_model_name_or_path,
