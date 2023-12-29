@@ -95,7 +95,6 @@ def tokenize_and_prepare_dataset(sentences: List[str], labels, tokenizer: transf
 
 
 def load_and_process(path: Path,
-                    tokenizer: transformers.PreTrainedTokenizer,
                     columns_to_drop : Tuple[str] =('count', 'hate_speech', 'offensive_language', 'neither')):
     
     """
