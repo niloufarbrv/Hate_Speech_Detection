@@ -58,14 +58,14 @@ class HateDetection_LM_CNN(L.LightningModule):
         input_ids, attention_mask, labels = batch
         output = self.forward(input_ids, attention_mask)
         loss = nn.CrossEntropyLoss()(output, labels)
-        self.log(f'train_loss_{self.language_model_name_or_path}', loss, on_epoch=True)
+        self.log(f'train_loss', loss, on_epoch=True)
         return loss
     
     def validation_step(self, batch):
         input_ids, attention_mask, labels = batch
         output = self.forward(input_ids, attention_mask)
         loss = nn.CrossEntropyLoss()(output, labels)
-        self.log(f'val_loss_{self.language_model_name_or_path}', loss, on_epoch=True, prog_bar=True)
+        self.log(f'val_loss', loss, on_epoch=True, prog_bar=True)
         return loss
     
     def configure_optimizers(self):
