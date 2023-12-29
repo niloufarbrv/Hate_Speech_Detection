@@ -16,6 +16,7 @@ class HateDetection_LM_CNN(L.LightningModule):
 
         self.batch_size = batch_size
         self.max_length = max_length
+        self.language_model_name_or_path = language_model_name_or_path  
         self.language_model =  AutoModelForSequenceClassification.from_pretrained(language_model_name_or_path) 
         self.tokenizer = AutoTokenizer.from_pretrained(language_model_name_or_path)
         self.config = self.language_model.config
@@ -33,7 +34,6 @@ class HateDetection_LM_CNN(L.LightningModule):
             padding=(1, 1))
         
         H_out_size = math.floor((self.max_length + (2 * self.conv.padding[0]) - (self.conv.dilation[0] * (self.conv.kernel_size[0] - 1)) - 1) / self.conv.stride[0] + 1)
-        # self.conv_output_size = self.num_out_channels * (self.max_length + 2) - (number_of_classes - 1) * (self.config.hidden_size + 2)
 
         self.relu = nn.ReLU()
         self.pool = nn.MaxPool2d(kernel_size=3, stride=1)
@@ -54,18 +54,18 @@ class HateDetection_LM_CNN(L.LightningModule):
         x = self.linear(self.dropout(self.flat(self.dropout(x))))
         return self.softmax(x)
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch):
         input_ids, attention_mask, labels = batch
         output = self.forward(input_ids, attention_mask)
         loss = nn.CrossEntropyLoss()(output, labels)
-        self.log('train_loss', loss, on_epoch=True)
+        self.log(f'train_loss_{self.language_model_name_or_path}', loss, on_epoch=True)
         return loss
     
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch):
         input_ids, attention_mask, labels = batch
         output = self.forward(input_ids, attention_mask)
         loss = nn.CrossEntropyLoss()(output, labels)
-        self.log('val_loss', loss, on_epoch=True)
+        self.log(f'val_loss_{self.language_model_name_or_path}', loss, on_epoch=True, prog_bar=True)
         return loss
     
     def configure_optimizers(self):
