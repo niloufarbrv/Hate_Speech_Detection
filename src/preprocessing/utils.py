@@ -4,6 +4,7 @@ sys.path.append('/home/nbeyran/Hate_Speech_Detection')
 from typing import List, Tuple
 import numpy as np
 from pathlib import Path
+from argparse import ArgumentParser
 import pandas as pd
 import string
 import transformers
@@ -122,3 +123,22 @@ def load_and_process(path: Path,
     # Clean the tweet texts by removing unwanted characters, correcting case, etc.
     cleaned_tweets = [clean_text(tweet) for tweet in data]
     return cleaned_tweets, labels
+
+
+def get_args():
+    """Get command-line arguments."""
+    parser = ArgumentParser()
+    parser.add_argument('--data_path', type=str, default='data/labeled_data.csv')
+    parser.add_argument('--language_model_name_or_path', type=str, default='bert-base-uncased')
+    parser.add_argument('--model_checkpoint_path', type=str, default='')
+    parser.add_argument('--do_train', type=bool, default=True)
+    parser.add_argument('--do_test', type=bool, default=False)
+    parser.add_argument('--random_state', type=int, default=2018)
+    parser.add_argument('--max_epochs', type=int, default=10)
+    parser.add_argument('--train_batch_size', type=int, default=16)
+    parser.add_argument('--validation_batch_size', type=int, default=16)
+    parser.add_argument('--max_length', type=int, default=36)
+    parser.add_argument('--freeze_lm', type=bool, default=True)
+    parser.add_argument('--number_of_classes', type=int, default=3)
+    args = parser.parse_args()
+    return args
