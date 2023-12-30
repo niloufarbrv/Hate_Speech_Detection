@@ -78,8 +78,8 @@ def main(args):
                                         shuffle=True)
     
     model_checkpoint = ModelCheckpoint(
-        dirpath=args.model_checkpoint_path,
-        filename='HateDetection-{args.language_model_name_or_path}-{epoch:02d}-{val_loss:.2f}',
+        dirpath= BASE_PATH / f"{args.model_checkpoint_path}",
+        filename='{args.language_model_name_or_path}-{epoch:02d}-{val_loss:.2f}',
         save_top_k=1,
         verbose=True,
         monitor='val_loss',
@@ -91,7 +91,7 @@ def main(args):
                                   freeze_lm=args.freeze_lm,
                                   number_of_classes=args.number_of_classes)
     
-    tb_logger = pl_loggers.TensorBoardLogger(f'logs/{args.language_model_name_or_path}')
+    tb_logger = pl_loggers.TensorBoardLogger({BASE_PATH}/ f"logs/{args.language_model_name_or_path}")
     
     if args.do_train:
       trainer = Trainer(max_epochs=args.max_epochs, callbacks=[model_checkpoint], logger=tb_logger)
