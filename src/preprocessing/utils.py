@@ -130,7 +130,7 @@ def get_args():
     parser = ArgumentParser()
     parser.add_argument('--data_path', type=str, default='data/labeled_data.csv')
     parser.add_argument('--language_model_name_or_path', type=str, default='bert-base-uncased')
-    parser.add_argument('--model_checkpoint_path', type=str, default='')
+    parser.add_argument('--model_checkpoint_path', type=str, default='checkpoints')
     parser.add_argument('--do_train', type=bool, default=True)
     parser.add_argument('--do_test', type=bool, default=False)
     parser.add_argument('--random_state', type=int, default=2018)
