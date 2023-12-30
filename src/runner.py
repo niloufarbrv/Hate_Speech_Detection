@@ -4,6 +4,8 @@ sys.path.append('/home/nbeyran/Hate_Speech_Detection/src')
 
 from lightning import Trainer
 from lightning.pytorch.callbacks import ModelCheckpoint
+from lightning.pytorch import loggers as pl_loggers
+
 from pytorch_lightning import seed_everything
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
@@ -89,8 +91,10 @@ def main(args):
                                   freeze_lm=args.freeze_lm,
                                   number_of_classes=args.number_of_classes)
     
+    tb_logger = pl_loggers.TensorBoardLogger(f'logs/{args.language_model_name_or_path}')
+    
     if args.do_train:
-      trainer = Trainer(max_epochs=args.max_epochs, callbacks=[model_checkpoint])
+      trainer = Trainer(max_epochs=args.max_epochs, callbacks=[model_checkpoint], logger=tb_logger)
       trainer.fit(model, train_data_loader, validation_data_loader)
     
     if args.do_test:
