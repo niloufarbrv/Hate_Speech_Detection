@@ -9,7 +9,7 @@ class HateDetection_LM_CNN(L.LightningModule):
     def __init__(self,
                   language_model_name_or_path: str,
                   batch_size: int = 4,
-                    max_length: int = 4, 
+                    max_length: int = 36, 
                     freeze_lm: bool = True,
                     number_of_classes: int = 3):
         super().__init__()
